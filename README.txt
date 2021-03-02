@@ -22,13 +22,13 @@ X-Sadopopulism
       "mil"                      https://twitter.com/i/lists/1164258452547481601
       "intel"                    https://twitter.com/i/lists/964203628616699904
       "mil-cyber"                https://twitter.com/i/lists/1304511704492056577
+      "disinformation"           https://twitter.com/i/lists/1162147525081669633
       "traffic"                  https://twitter.com/i/lists/1088175145867448320
 
     Evidentiary
 
       "LOVEINT"                  https://twitter.com/i/lists/1225561271409442816
       "plastic made for sale"    https://twitter.com/i/lists/1361630300707704836
-      "disinformation"           https://twitter.com/i/lists/1162147525081669633
       "disease of the flesh"     https://twitter.com/i/lists/1228723336496197634
       "insecurity"               https://twitter.com/i/lists/1120785148214161408
       "monarchi exploit of govt" https://twitter.com/i/lists/1349998374595006465
