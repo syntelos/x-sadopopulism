@@ -4,11 +4,11 @@
 #
 # decomposition
 #
-input=''
-target=''
-subject=''
-source=''
-fext=''
+declare input=''
+declare target=''
+declare subject=''
+declare source=''
+declare fext=''
 #
 # composition
 #
@@ -44,7 +44,7 @@ function decompose {
     then
         if subject=$(echo "${input}" | sed 's%^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-%%; s%-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].*%%;') &&[ -n "${subject}" ]
         then
-            if source=$(echo "${input}" | sed 's%^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-%%; s%\.[A-Za-z_]*$%%; s%[A-Za-z_]*%%; s%-[A-Za-z_]*%%; s%^-%%; s%-$%%;') &&[ -n "${source}" ]
+            if source=$(echo "${input}" | sed 's%^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-%%; s%\.[A-Za-z_~]+$%%; s%[A-Za-z_]*%%; s%-[A-Za-z_]+%%; s%-[A-Za-z_]+%%; s%-[A-Za-z_]+%%; s%^-%%; s%-$%%;') &&[ -n "${source}" ]
             then
                 if fext=$(echo "${input}" | sed 's%^.*\.%%;') &&[ -n "${fext}" ]
                 then
@@ -91,11 +91,16 @@ EOF
 #
 # git:syntelos:/sh-tex$ ./target.sh 12345678-0987-subtst-12345678-0738.txt
 #
-if [ -n "${1}" ] && decompose "${1}" && compose
+if [ -n "${1}" ] 
 then
-    echo "${reference}"
+    if decompose "${1}" && compose
+    then
+        echo "${reference}"
 
-    exit 0
+        exit 0
+    else
+        exit 1
+    fi
 else
     usage
     exit 1

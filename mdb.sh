@@ -22,6 +22,15 @@ Description
     Initialize file 'm.db' for contents of working directory.
 
 
+Synopsis
+
+    mdb sequence
+
+Description
+
+    Use file 'm.db' for contents of commit messages.
+
+
 EOF
 }
 function init {
@@ -121,6 +130,68 @@ EOF
         return 1
     fi
 }
+function sequence {
+    if [ -f m.db ]&& rm -f /tmp/batch
+    then
+        declare idx=0
+        declare msg
+        declare src
+        declare tgt
+        declare cnt=0
+
+        while true
+        do
+            rm -f /tmp/batch
+            cnt=0
+            for mre in $(egrep -e "^${idx}:" m.db)
+            do
+                msg=$(echo ${mre} | awk -F: '{print $2}' | sed 's/%/ /g')
+                src=$(echo ${mre} | awk -F: '{print $3}')
+
+                # (batch interior)
+                #
+                if tgt=$(../target.sh "${src}") &&[ -n "${tgt}" ]
+                then
+                    echo ${src} >> /tmp/batch
+
+                    # (batch op)
+                    #
+                    if git mv -f "${src}" "${tgt}"
+                    then
+                        git status --porcelain "${tgt}"
+                    fi
+                else
+                    cat<<EOF>&2
+$0 error from "../target.sh '${src}' -> '${tgt}'".
+EOF
+                    #(return 1) #(ignore)
+                fi
+
+                cnt=$(( ${cnt} + 1 ))
+            done
+
+            # (batch exterior)
+            #
+            if [ -f /tmp/batch ]&& batch=$(cat /tmp/batch) && [ -n "${batch}" ]
+            then
+                git commit -m "${msg}" ${batch}
+            fi
+            #
+            if [ 0 -lt ${cnt} ]
+            then
+                idx=$(( ${idx} + 1 ))
+            else
+                break
+            fi
+        done
+        return 0
+    else
+        cat<<EOF>&2
+$0 error: missing resource 'm.db', or failed to vacate '/tmp/batch'.
+EOF
+        return 1
+    fi
+}
 
 if [ -n "${1}" ]
 then
@@ -152,6 +223,14 @@ then
                     fi
                 ;;
             esac
+            ;;
+        sequence)
+            if sequence
+            then
+                exit 0
+            else
+                exit 1
+            fi
             ;;
         *)
             usage
